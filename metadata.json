@@ -1,0 +1,10 @@
+{
+    "uuid": "wallpaper-switcher@antigravity.dev",
+    "name": "Wallpaper Switcher",
+    "description": "Automatically changes wallpaper from a folder.",
+    "shell-version": [
+        "49"
+    ],
+    "url": "",
+    "settings-schema": "org.gnome.shell.extensions.wallpaper-switcher"
+}

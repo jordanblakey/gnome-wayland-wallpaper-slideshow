@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="wallpaper-switcher">
+  <schema id="org.gnome.shell.extensions.wallpaper-switcher" path="/org/gnome/shell/extensions/wallpaper-switcher/">
+    <key name="wallpaper-folder" type="s">
+      <default>""</default>
+      <summary>Wallpaper Folder</summary>
+      <description>The folder containing wallpaper images.</description>
+    </key>
+    <key name="delay-seconds" type="i">
+      <default>300</default>
+      <summary>Delay in seconds</summary>
+      <description>Time to wait before switching wallpaper.</description>
+    </key>
+  </schema>
+</schemalist>
