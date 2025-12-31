@@ -1,5 +1,5 @@
 # Makefile for Wallpaper Switcher Extension
-UUID = wallpaper-switcher@antigravity.dev
+UUID = gnome-wayland-wallpaper-slideshow@jordanblakey.dev
 INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 
 .PHONY: all pack install install-local enable disable reload clean logs schemas
@@ -33,7 +33,12 @@ disable:
 	gnome-extensions disable $(UUID)
 
 # Reload the extension (disable then enable)
-reload: disable enable
+reload: 
+	make disable && make enable
+
+# Do everything
+cycle: 
+	make && make install && make reload
 
 # Clean build artifacts
 clean:

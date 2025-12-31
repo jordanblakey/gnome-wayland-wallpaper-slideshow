@@ -1,10 +1,11 @@
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 import Pango from 'gi://Pango';
 import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-export default class WallpaperSwitcherPreferences extends ExtensionPreferences {
+class WallpaperSwitcherPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window._settings = this.getSettings();
 
@@ -87,7 +88,7 @@ export default class WallpaperSwitcherPreferences extends ExtensionPreferences {
         // Delay Row
         const delayRow = new Adw.ActionRow({
             title: _('Switch Interval'),
-            subtitle: _('Duration in seconds (default: 300)')
+            subtitle: _('Duration in seconds (default: 1800)')
         });
 
         const delaySpin = new Gtk.SpinButton({
@@ -114,3 +115,5 @@ export default class WallpaperSwitcherPreferences extends ExtensionPreferences {
         window.add(page);
     }
 }
+
+export default GObject.registerClass(WallpaperSwitcherPreferences);

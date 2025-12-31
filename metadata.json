@@ -1,10 +1,14 @@
 {
-    "uuid": "wallpaper-switcher@antigravity.dev",
-    "name": "Wallpaper Switcher",
-    "description": "Automatically changes wallpaper from a folder.",
+    "uuid": "gnome-wayland-wallpaper-slideshow@jordanblakey.dev",
+    "name": "Wallpaper Slideshow (Wayland compatible)",
+    "description": "Automatically changes wallpaper with images from a local folder on a configurable delay. Extremely simple, performant, and works with Wayland.",
     "shell-version": [
+        "45",
+        "46",
+        "47",
+        "48",
         "49"
     ],
     "url": "",
-    "settings-schema": "org.gnome.shell.extensions.wallpaper-switcher"
+    "settings-schema": "org.gnome.shell.extensions.gnome-wayland-wallpaper-slideshow"
 }

@@ -17,6 +17,11 @@ export default class WallpaperSwitcherExtension extends Extension {
             this._changeWallpaper(); // Immediate change on folder update
         });
 
+        // Initial switch on load
+        this._changeWallpaper();
+
+
+
         // Start initial timer
         this._resetTimer();
     }
