@@ -5,7 +5,7 @@ import GObject from 'gi://GObject';
 import Pango from 'gi://Pango';
 import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-class WallpaperSwitcherPreferences extends ExtensionPreferences {
+export default class WallpaperSwitcherPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window._settings = this.getSettings();
 
@@ -115,5 +115,3 @@ class WallpaperSwitcherPreferences extends ExtensionPreferences {
         window.add(page);
     }
 }
-
-export default GObject.registerClass(WallpaperSwitcherPreferences);

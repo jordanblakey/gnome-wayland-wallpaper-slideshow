@@ -4,6 +4,8 @@ import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/
 
 export default class WallpaperSwitcherExtension extends Extension {
     enable() {
+        console.log('[Wallpaper Switcher] extension enabled');
+
         this._settings = this.getSettings();
         this._backgroundSettings = new Gio.Settings({ schema_id: 'org.gnome.desktop.background' });
         this._timeoutId = null;
@@ -24,9 +26,12 @@ export default class WallpaperSwitcherExtension extends Extension {
 
         // Start initial timer
         this._resetTimer();
+
+        console.log('[Wallpaper Switcher] reached the end of enable()');
     }
 
     disable() {
+        console.log('[Wallpaper Switcher] extension disabled');
         if (this._timeoutId) {
             GLib.source_remove(this._timeoutId);
             this._timeoutId = null;
@@ -49,9 +54,11 @@ export default class WallpaperSwitcherExtension extends Extension {
             this._changeWallpaper();
             return GLib.SOURCE_CONTINUE;
         });
+        console.log('[Wallpaper Switcher] timer reset');
     }
 
     _changeWallpaper() {
+        console.log('[Wallpaper Switcher] changing wallpaper');
         const folderPath = this._settings.get_string('wallpaper-folder');
         if (!folderPath) return;
 
@@ -94,5 +101,6 @@ export default class WallpaperSwitcherExtension extends Extension {
         } catch (e) {
             console.error(`Wallpaper Switcher Error: ${e.message}`);
         }
+        console.log('[Wallpaper Switcher] wallpaper changed');
     }
 }
