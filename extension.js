@@ -62,6 +62,7 @@ export default class WallpaperSlideshowExtension extends Extension {
         this._settings = this.getSettings();
         this._backgroundSettings = new Gio.Settings({ schema_id: 'org.gnome.desktop.background' });
         this._timeoutId = null;
+        this._cachedFiles = [];
 
         // Monitor settings changes
         this._settings.connect('changed::delay-seconds', () => {
@@ -69,10 +70,12 @@ export default class WallpaperSlideshowExtension extends Extension {
         });
 
         this._settings.connect('changed::wallpaper-folder', () => {
+            this._refreshCache();
             this._changeWallpaper(); // Immediate change on folder update
         });
 
-        // Initial switch on load
+        // Initialize cache and switch on load
+        this._refreshCache();
         this._changeWallpaper();
 
         // Start initial timer
@@ -96,6 +99,35 @@ export default class WallpaperSlideshowExtension extends Extension {
         }
         this._settings = null;
         this._backgroundSettings = null;
+        this._cachedFiles = [];
+    }
+
+    _refreshCache() {
+        console.log('[Wallpaper Slideshow] refreshing file cache');
+        this._cachedFiles = [];
+        const folderPath = this._settings.get_string('wallpaper-folder');
+        if (!folderPath) return;
+
+        const dir = Gio.File.new_for_path(folderPath);
+        if (!dir.query_exists(null)) return;
+
+        let enumerator;
+        try {
+            enumerator = dir.enumerate_children('standard::name,standard::content-type', Gio.FileQueryInfoFlags.NONE, null);
+            let info;
+            while ((info = enumerator.next_file(null)) !== null) {
+                const contentType = info.get_content_type();
+                if (contentType && contentType.startsWith('image/')) {
+                    this._cachedFiles.push(info.get_name());
+                }
+            }
+        } catch (e) {
+            console.error(`[Wallpaper Slideshow] Error enumerating files: ${e.message}`);
+        } finally {
+            if (enumerator) {
+                enumerator.close(null);
+            }
+        }
     }
 
     _resetTimer() {
@@ -117,48 +149,26 @@ export default class WallpaperSlideshowExtension extends Extension {
 
     _changeWallpaper() {
         console.log('[Wallpaper Slideshow] changing wallpaper');
+
+        if (this._cachedFiles.length === 0) {
+            console.log('[Wallpaper Slideshow] No images found in cache.');
+            return;
+        }
+
         const folderPath = this._settings.get_string('wallpaper-folder');
         if (!folderPath) return;
 
-        const dir = Gio.File.new_for_path(folderPath);
-        if (!dir.query_exists(null)) return;
+        const dir = Gio.File.new_for_path(folderPath); // We reconstruct dir to get child URI, but no enumeration.
 
-        // Enumerate files asynchronously or synchronously? 
-        // Sync is easier but can block. For a folder with limited images it's fine.
-        // Let's use standard directory enumeration.
+        // Pick random
+        const randomIndex = Math.floor(Math.random() * this._cachedFiles.length);
+        const randomImage = this._cachedFiles[randomIndex];
+        const fullPath = dir.get_child(randomImage).get_uri();
 
-        try {
-            const children = [];
-            const enumerator = dir.enumerate_children('standard::name,standard::content-type', Gio.FileQueryInfoFlags.NONE, null);
+        // Update background
+        this._backgroundSettings.set_string('picture-uri', fullPath);
+        this._backgroundSettings.set_string('picture-uri-dark', fullPath);
 
-            let info;
-            while ((info = enumerator.next_file(null)) !== null) {
-                const contentType = info.get_content_type();
-                if (contentType.startsWith('image/')) {
-                    children.push(info.get_name());
-                }
-            }
-            enumerator.close(null);
-
-            if (children.length === 0) return;
-
-            // Pick random
-            const randomIndex = Math.floor(Math.random() * children.length);
-            const randomImage = children[randomIndex];
-            const fullPath = dir.get_child(randomImage).get_uri(); // picture-uri requires URI
-
-            // Update background
-            // GNOME uses picture-uri for light theme and picture-uri-dark for dark theme usually. 
-            // We'll set both to be safe/consistent.
-
-            // Note: transition mechanics are handled by GNOME Shell's background manager automatically 
-            // when these keys change.
-            this._backgroundSettings.set_string('picture-uri', fullPath);
-            this._backgroundSettings.set_string('picture-uri-dark', fullPath);
-
-        } catch (e) {
-            console.error(`Wallpaper Slideshow Error: ${e.message}`);
-        }
-        console.log('[Wallpaper Slideshow] wallpaper changed');
+        console.log('[Wallpaper Slideshow] wallpaper changed to ' + randomImage);
     }
 }
