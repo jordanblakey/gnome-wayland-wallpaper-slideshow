@@ -9,30 +9,54 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
+// Register the indicator class - this is the top bar icon and popup menu
 const Indicator = GObject.registerClass(
     class Indicator extends PanelMenu.Button {
         _init() {
-            super._init(0.0, _('My Shiny Indicator'));
+            super._init(0.0, _('Wallpaper Slideshow'));
 
+            // Add the icon to the panel menu button
             this.add_child(new St.Icon({
-                icon_name: 'face-smile-symbolic',
+                // Use https://flathub.org/en/apps/org.gnome.design.IconLibrary to find icons
+                icon_name: 'preferences-desktop-wallpaper-symbolic',
                 style_class: 'system-status-icon',
             }));
 
-            let item = new PopupMenu.PopupMenuItem(_('Show Notification'));
-            item.connect('activate', () => {
-                Main.notify(_('Whatʼs up, folks?'));
+            // Add the title to the panel menu button
+            // PanelMenu.Button -> PopupBaseMenuItem -> Label
+            const titleItem = new PopupMenu.PopupBaseMenuItem({
+                reactive: false,
+                can_focus: false
             });
-            this.menu.addMenuItem(item);
+            const label = new St.Label({
+                text: 'Wallpaper Slideshow',
+                // you can use CSS here if desired
+            });
+            titleItem.add_child(label);
+            this.menu.addMenuItem(titleItem);
+
+            // We need the extension instances to register the menu option for settings
+            // Otherwise we could do it here instead of in the WallpaperSlideshowExtension class
         }
     });
 
 
-export default class WallpaperSwitcherExtension extends Extension {
+export default class WallpaperSlideshowExtension extends Extension {
+    // Lifecycle methods enable() and disable() are called when the extension is enabled and disabled
     enable() {
-        console.log('[Wallpaper Switcher] extension enabled');
+        console.log('[Wallpaper Slideshow] extension enabled');
 
+        // Here we instantiate the indicator class we created above
         this._indicator = new Indicator();
+
+        // Add settings menu item, now that we have the WallpaperSlideshowExtension instance
+        const settingsItem = new PopupMenu.PopupMenuItem(_('Settings'));
+        settingsItem.connect('activate', () => {
+            this.openPreferences(); // This is the method we needed to pop the settings window
+        });
+        this._indicator.menu.addMenuItem(settingsItem);
+
+        // Add the indicator to the panel
         Main.panel.addToStatusArea(this.uuid, this._indicator);
 
         this._settings = this.getSettings();
@@ -54,12 +78,13 @@ export default class WallpaperSwitcherExtension extends Extension {
         // Start initial timer
         this._resetTimer();
 
-        console.log('[Wallpaper Switcher] reached the end of enable()');
+        console.log('[Wallpaper Slideshow] reached the end of enable()');
     }
 
     disable() {
-        console.log('[Wallpaper Switcher] extension disabled');
+        console.log('[Wallpaper Slideshow] extension disabled');
 
+        // Remove the indicator from the panel
         if (this._indicator) {
             this._indicator.destroy();
             this._indicator = null;
@@ -87,11 +112,11 @@ export default class WallpaperSwitcherExtension extends Extension {
             this._changeWallpaper();
             return GLib.SOURCE_CONTINUE;
         });
-        console.log('[Wallpaper Switcher] timer reset');
+        console.log('[Wallpaper Slideshow] timer reset');
     }
 
     _changeWallpaper() {
-        console.log('[Wallpaper Switcher] changing wallpaper');
+        console.log('[Wallpaper Slideshow] changing wallpaper');
         const folderPath = this._settings.get_string('wallpaper-folder');
         if (!folderPath) return;
 
@@ -132,8 +157,8 @@ export default class WallpaperSwitcherExtension extends Extension {
             this._backgroundSettings.set_string('picture-uri-dark', fullPath);
 
         } catch (e) {
-            console.error(`Wallpaper Switcher Error: ${e.message}`);
+            console.error(`Wallpaper Slideshow Error: ${e.message}`);
         }
-        console.log('[Wallpaper Switcher] wallpaper changed');
+        console.log('[Wallpaper Slideshow] wallpaper changed');
     }
 }

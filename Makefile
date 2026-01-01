@@ -1,10 +1,10 @@
-# Makefile for Wallpaper Switcher Extension
+# Makefile for Wallpaper Slideshow Extension
 UUID = gnome-wayland-wallpaper-slideshow@jordanblakey.dev
 INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 
 .PHONY: all pack install install-local enable disable reload clean logs schemas
 
-all: schemas pack
+all: schemas pack install disable enable
 
 # Compile GSettings schemas
 schemas:
@@ -36,12 +36,8 @@ disable:
 reload: 
 	make disable && make enable
 
-# Do everything
-cycle: 
-	make && make install && make reload
-
 dev: 
-	make cycle && ./run-debug-session.sh
+	make all && clear && ./run-debug-session.sh
 
 
 # Clean build artifacts

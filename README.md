@@ -1,9 +1,21 @@
-# GNOME Shell Wallpaper Switcher Extension
+# GNOME Shell Wallpaper Slideshow Extension
 
 A GNOME Shell extension that automatically cycles through desktop backgrounds from a specified folder.
 
-I created this extension because I couldn't find a simple, Wayland-compatible wallpaper switcher that didn't have performance issues.
+I created this extension because I couldn't find a simple, Wayland-compatible wallpaper Slideshow that didn't have performance issues.
 
+```bash
+# Miscellaneous tools that are handy for GNOME Shell development
+sudo apt install gnome-shell
+gnome-extensions --help
+gnome-shell-extension-tool --help
+gnome-shell --help
+gnome-shell --version
+dbus-run-session gnome-shell --devkit
+sudo apt install gnome-shell-extension-manager # better than the browser extension
+# browse available system icons
+# https://flathub.org/en/apps/org.gnome.design.IconLibrary 
+```
 
 ## Features
 - Select any folder containing images.
