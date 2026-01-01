@@ -40,6 +40,10 @@ reload:
 cycle: 
 	make && make install && make reload
 
+dev: 
+	make cycle && ./run-debug-session.sh
+
+
 # Clean build artifacts
 clean:
 	rm -f schemas/gschemas.compiled
