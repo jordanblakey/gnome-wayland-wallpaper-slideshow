@@ -112,21 +112,16 @@ export default class WallpaperSlideshowExtension extends Extension {
         if (!dir.query_exists(null)) return;
 
         let enumerator;
-        try {
-            enumerator = dir.enumerate_children('standard::name,standard::content-type', Gio.FileQueryInfoFlags.NONE, null);
-            let info;
-            while ((info = enumerator.next_file(null)) !== null) {
-                const contentType = info.get_content_type();
-                if (contentType && contentType.startsWith('image/')) {
-                    this._cachedFiles.push(info.get_name());
-                }
+        enumerator = dir.enumerate_children('standard::name,standard::content-type', Gio.FileQueryInfoFlags.NONE, null);
+        let info;
+        while ((info = enumerator.next_file(null)) !== null) {
+            const contentType = info.get_content_type();
+            if (contentType && contentType.startsWith('image/')) {
+                this._cachedFiles.push(info.get_name());
             }
-        } catch (e) {
-            console.error(`[Wallpaper Slideshow] Error enumerating files: ${e.message}`);
-        } finally {
-            if (enumerator) {
-                enumerator.close(null);
-            }
+        }
+        if (enumerator) {
+            enumerator.close(null);
         }
     }
 

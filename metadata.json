@@ -9,6 +9,9 @@
         "48",
         "49"
     ],
-    "url": "",
-    "settings-schema": "org.gnome.shell.extensions.gnome-wayland-wallpaper-slideshow"
+    "url": "https://github.com/jordanblakey/gnome-wayland-wallpaper-slideshow",
+    "settings-schema": "org.gnome.shell.extensions.gnome-wayland-wallpaper-slideshow",
+    "donations": {
+        "github": "jordanblakey"
+    }
 }

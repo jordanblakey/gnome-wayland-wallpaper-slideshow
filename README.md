@@ -2,15 +2,14 @@
 
 A GNOME Shell extension that automatically cycles through desktop backgrounds from a specified folder.
 
-I created this extension because I couldn't find a simple, Wayland-compatible wallpaper Slideshow that didn't have performance issues.
+I created this extension because I couldn't find a simple, Wayland-compatible wallpaper slideshow that didn't have performance issues.
 
 ```bash
-# Miscellaneous tools that are handy for GNOME Shell development
+# Miscellaneous tools that are handy for GNOME Shell Extension development
 sudo apt install gnome-shell
+gnome-shell --help
 gnome-extensions --help
 gnome-shell-extension-tool --help
-gnome-shell --help
-gnome-shell --version
 dbus-run-session gnome-shell --devkit
 sudo apt install gnome-shell-extension-manager # better than the browser extension
 # browse available system icons
@@ -34,7 +33,8 @@ This project includes a `Makefile` to simplify installation.
 1.  **Clone the repository**.
 2.  **Run the install command**:
     ```bash
-    make cycle
+    make install # First install. Logout and login.
+    make install && make reload # after making changes. Some changes may require logout and login to appear.
     ```
     This will compile schemas, pack the extension, install it locally, and reload the extension.
     *Note: You may need to restart GNOME Shell (Log out/in or Alt+F2 -> r) for the first installation.*

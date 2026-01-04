@@ -39,7 +39,6 @@ reload:
 dev: 
 	make all && clear && ./run-debug-session.sh
 
-
 # Clean build artifacts
 clean:
 	rm -f schemas/gschemas.compiled

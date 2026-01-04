@@ -8,6 +8,8 @@ import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/
 export default class WallpaperSlideshowPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window._settings = this.getSettings();
+        window.set_default_size(600, 400);
+        window.set_resizable(false);
 
         const page = new Adw.PreferencesPage();
         const group = new Adw.PreferencesGroup({
